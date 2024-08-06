@@ -3,7 +3,8 @@
 <suite name="Suite">
   <test thread-count="5" name="Test">
     <classes>
-      <class name="controllers.NewTest"/>
+     <!--  <class name="controllers.NewTest"/> -->
+      <class name="controllers.MangaAuthorTest"/>
     </classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
