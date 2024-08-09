@@ -72,6 +72,15 @@ pipeline {
                     echo "Start build"
                     mvn install -DskipTests
                 '''
+                archiveArtifacts artifacts: 'target/*.war'
+            }
+        }
+
+        stage('deploy') {
+            steps {
+                deploy adapters [tomcat9(url: 'http://192.168.1.4:8888', credentialsId: 'tomcat')],
+                    war: 'target/*.war',
+                    contextPath: 'java-web-app'
             }
         }
     }
