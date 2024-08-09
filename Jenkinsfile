@@ -30,7 +30,7 @@ pipeline {
 
         stage('test') {
             steps {
-                sh '''Ï
+                sh '''
                     echo "Start test"
                     mvn install
                 '''
