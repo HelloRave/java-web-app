@@ -3,12 +3,10 @@
  */
 package controllers;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.*;
 /**
  * 
  */
@@ -19,7 +17,7 @@ class MangaAuthorTest {
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
-	void setUp() throws Exception {
+	public void setUp() throws Exception {
 		author = new MangaAuthor("1", "name");
 	}
 
@@ -27,7 +25,7 @@ class MangaAuthorTest {
 	 * @throws java.lang.Exception
 	 */
 	@AfterEach
-	void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 	}
 
 	/**
