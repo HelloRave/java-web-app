@@ -95,7 +95,6 @@ pipeline {
                         deploy adapters: [tomcat9(url: "http://${LOCAL_SERVER}:8888", credentialsId: 'tomcat')],
                             war: 'target/*.war',
                             contextPath: 'java-web-app'
-                    }
                 } else {
                     deploy adapters: [tomcat9(url: "http://${REMOTE_SERVER}:8888", credentialsId: 'tomcat')],
                         war: 'target/*.war',
