@@ -18,7 +18,7 @@ pipeline {
     }
 
     parameters {
-        choice(name: 'PIPELINE_ENV', choices: ['Docker', 'Local'], description: 'Run pipeline in either local or docker environment')
+        choice(name: 'PIPELINE_ENV', choices: ['Local', 'Docker'], description: 'Run pipeline in either local or docker environment')
         booleanParam(name: 'BUILD_DOCKER_IMAGE', defaultValue: true, description: 'Build Docker Image for production')
         string(name: 'EMAIL_LIST', defaultValue: "${NOTIFY_USERS}", description: 'Email notifications to')
     }
