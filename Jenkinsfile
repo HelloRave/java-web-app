@@ -73,8 +73,9 @@ pipeline {
                     sh """
                         echo "Building docker image"
                         docker build -t wallaceww/my-docker-repo:1.0.0 .
-                        docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}
+                        echo ${env.dockerHubPassword} | docker login -u ${env.dockerHubUser} --password-stdin 
                         docker push wallaceww/my-docker-repo:1.0.0
+                        docker logout
                     """
                 }
             }
