@@ -78,9 +78,9 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            when {
-                triggeredBy 'BUILD_DOCKER_IMAGE'
-            }
+            // when {
+            //     triggeredBy 'BUILD_DOCKER_IMAGE'
+            // }
             steps {
                 sh '''
                     echo "Building docker image"
