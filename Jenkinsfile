@@ -15,6 +15,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'SONAR_QUALITY_GATE', defaultValue: false, description: 'Enable overall code quality check')
+        booleanParam(name: 'BUILD_DOCKER_IMAGE', defaultValue: true, description: 'Build Docker Image for production')
         string(name: 'EMAIL_LIST', defaultValue: "${NOTIFY_USERS}", description: 'Email notifications to')
     }
 
@@ -73,6 +74,18 @@ pipeline {
                     mvn install -DskipTests
                 '''
                 archiveArtifacts artifacts: 'target/*.war'
+            }
+        }
+
+        stage('Build Docker Image') {
+            when {
+                triggeredBy 'BUILD_DOCKER_IMAGE'
+            }
+            steps {
+                sh '''
+                    echo "Building docker image"
+                    docker build -t java-web-app:1.0.0 .
+                '''
             }
         }
 
