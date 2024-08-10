@@ -66,7 +66,9 @@ pipeline {
 
         stage('Build Docker Image') {
             when {
-                triggeredBy 'BUILD_DOCKER_IMAGE'
+                expression {
+                    params.BUILD_DOCKER_IMAGE == true
+                }
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
