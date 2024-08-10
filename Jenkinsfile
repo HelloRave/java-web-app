@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage('clean') {
+        stage('Clean') {
             steps {
                 sh '''
                     echo "Start clean"
@@ -28,7 +28,7 @@ pipeline {
             }
         }
 
-        stage('test') {
+        stage('Test') {
             steps {
                 sh '''
                     echo "Start test"
@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        stage('sonar') {
+        stage('Sonar') {
             steps {
                 withSonarQubeEnv(installationName: 'sonarqube-local') {
                     sh '''
@@ -54,7 +54,7 @@ pipeline {
             }
         }
 
-        stage('build') {
+        stage('Build') {
             steps {
                 sh '''
                     echo "Start build"
@@ -65,9 +65,9 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            // when {
-            //     triggeredBy 'BUILD_DOCKER_IMAGE'
-            // }
+            when {
+                triggeredBy 'BUILD_DOCKER_IMAGE'
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                     sh """
@@ -81,7 +81,7 @@ pipeline {
             }
         }
 
-        stage('deploy') {
+        stage('Deploy') {
             steps {
                 deploy adapters: [tomcat9(url: 'http://192.168.1.4:8888', credentialsId: 'tomcat')],
                     war: 'target/*.war',
