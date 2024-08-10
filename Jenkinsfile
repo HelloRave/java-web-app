@@ -14,7 +14,6 @@ pipeline {
     }
 
     parameters {
-        booleanParam(name: 'SONAR_QUALITY_GATE', defaultValue: false, description: 'Enable overall code quality check')
         booleanParam(name: 'BUILD_DOCKER_IMAGE', defaultValue: true, description: 'Build Docker Image for production')
         string(name: 'EMAIL_LIST', defaultValue: "${NOTIFY_USERS}", description: 'Email notifications to')
     }
@@ -46,18 +45,6 @@ pipeline {
                         mvn sonar:sonar
                     '''
                 }
-            }
-        }
-
-        stage('sonar quality gate') {
-            when {
-                anyOf {
-                    branch 'develop';
-                    triggeredBy 'SONAR_QUALITY_GATE'
-                }
-            }
-
-            steps {
                 script {
                     def qualitygate = waitForQualityGate()
                     if (qualitygate.status != 'OK') {
@@ -82,10 +69,14 @@ pipeline {
             //     triggeredBy 'BUILD_DOCKER_IMAGE'
             // }
             steps {
-                sh '''
-                    echo "Building docker image"
-                    docker build -t java-web-app:1.0.0 .
-                '''
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                    sh """
+                        echo "Building docker image"
+                        docker build -t wallaceww/my-docker-repo:1.0.0 .
+                        docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}
+                        docker push wallaceww/my-docker-repo:1.0.0
+                    """
+                }
             }
         }
 
