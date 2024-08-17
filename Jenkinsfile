@@ -60,30 +60,35 @@ pipeline {
         }
 
         stage('Build') {
-            steps {
-                sh '''
-                    echo "Start build"
-                    mvn install -DskipTests
-                '''
-                archiveArtifacts artifacts: 'target/*.war'
-            }
-        }
-
-        stage('Build Docker Image') {
-            when {
-                expression {
-                    params.BUILD_DOCKER_IMAGE == true
+            failFast true
+            parallel {
+                stage('WAR file') {
+                    steps {
+                        sh '''
+                            echo "Start build"
+                            mvn install -DskipTests
+                        '''
+                        archiveArtifacts artifacts: 'target/*.war'
+                    }
                 }
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                    sh """
-                        echo "Building docker image"
-                        docker build -t ${DOCKER_IMG_NAME}:${DOCKER_IMG_TAG} .
-                        echo ${env.dockerHubPassword} | docker login -u ${env.dockerHubUser} --password-stdin 
-                        docker push ${DOCKER_IMG_NAME}:${DOCKER_IMG_TAG}
-                        docker logout
-                    """
+
+                stage('Docker Image') {
+                    when {
+                        expression {
+                            params.BUILD_DOCKER_IMAGE == true
+                        }
+                    }
+                    steps {
+                        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                            sh """
+                                echo "Building docker image"
+                                docker build -t ${DOCKER_IMG_NAME}:${DOCKER_IMG_TAG} .
+                                echo ${env.dockerHubPassword} | docker login -u ${env.dockerHubUser} --password-stdin 
+                                docker push ${DOCKER_IMG_NAME}:${DOCKER_IMG_TAG}
+                                docker logout
+                            """
+                        }
+                    }
                 }
             }
         }
